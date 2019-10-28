@@ -178,10 +178,27 @@ def eval(s):
     return ret
 
 
+message = """Use single lower and upper case letters as operands,
+          the only logical operators allowed are:
+          ~   - negation;
+          ||  - or;
+          &&  - and;
+          =>  - conditional;
+          <=> - biconditional.
+          After entering a formula program states if its tautology, satisfiable or not 
+          satisfiable. For more info:
+          https://github.com/lion137/propositional_calculus_evaluate"""
+
+
 def repl(prompt="> "):
     while True:
         try:
             v = input(prompt)
+            if v.startswith("#"):
+                continue
+            if v == "help" or v == "-h" or v == "/h" or v == "-usage":
+                print(message)
+                continue
             if v is not None:
                 if re.match("^(?![\\s\\S])|(^\\s+)", v):
                     pass
@@ -192,5 +209,7 @@ def repl(prompt="> "):
         except SyntaxError as ex:
             print("SyntaxError:", ex)
 
+
 if __name__ == '__main__':
-        repl()
+    print("Propositional Logic Parser, press help, /h, -h or -usage for help")
+    repl()
