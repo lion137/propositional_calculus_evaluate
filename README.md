@@ -12,4 +12,6 @@ after entering a proper propositional logic formula program displays, very selfe
 ```Formula is satisfiable```;    
 ```Formula is not satisfiable``` - means, that negation of the formula is a tautology.    
 Could be also used online here:    
-https://repl.it/@lion137/propositionalcalculluseval
+https://repl.it/@lion137/propositionalcalculluseval    
+More info here:
+https://lion137.blogspot.com/2019/10/propositional-calculus-evaluation.html
