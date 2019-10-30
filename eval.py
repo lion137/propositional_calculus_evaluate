@@ -178,6 +178,97 @@ def eval(s):
     return ret
 
 
+# formula correctness checks
+
+# test for correct symbols, should be done before
+def pre_check(s):
+    v = tokenize(s)
+    for t in v:
+        if t not in bin_operators + ['~', '(', ')'] and not _operand_test(t):
+            return False
+    return True
+
+
+def bal_parenthesis(v):
+    v = tokenize(v)
+    st = Stack()
+    for t in v:
+        if t == "(":
+            st.push(t)
+        if t == ")":
+            if st.is_empty():
+                return False
+            else:
+                st.pop()
+    return st.is_empty()
+
+
+# is operand check(is name)
+def _operand_test(s):
+    if s in operands:
+        return True
+    else:
+        return False
+
+
+# checks what is after operand, cant be paren, negation or operand
+def after_letter(v):
+    v = tokenize(v)
+    lim = len(v)
+    for i in range(lim - 1):
+        if _operand_test(v[i]):
+            if v[i + 1] == "(" or v[i + 1] == "~" or _operand_test(v[i + 1]):
+                return False
+    return True
+
+
+def after_left_paren(v):
+    v = tokenize(v)
+    lim = len(v)
+    for i in range(lim - 1):
+        if v[i] == '(':
+            a = v[i + 1] in operands
+            b = v[i + 1] == '('
+            c = v[i + 1] == '~'
+            if not (a or b or c):
+                return False
+    return True
+
+
+def operands_operators_number(v):
+    if v == "":
+        return True
+    v = tokenize(v)
+    operands_number = 0
+    operators_number = 0
+    for t in v:
+        if t in operands:
+            operands_number += 1
+        if t in bin_operators:
+            operators_number += 1
+    return operands_number == operators_number + 1
+
+
+def formula_start(v):
+    v = v.strip()
+    if len(v) == 0:
+        return True
+    if v[0] in operands or v[0] == '~' or v[0] == '(':
+        return True
+    else:
+        return False
+
+
+def check(v):
+    if not pre_check(v):
+        return "Invalid symbols"
+    elif not bal_parenthesis(v) or not after_letter(v) or not after_left_paren(v) or not after_letter(v)\
+            or not operands_operators_number(v) or not formula_start(v):
+        return "Syntax error"
+    else:
+        return True
+
+
 message = """Use single lower and upper case letters as operands,
           the only logical operators allowed are:
           ~   - negation;
@@ -194,6 +285,11 @@ def repl(prompt="> "):
     while True:
         try:
             v = input(prompt)
+            t = check(v)
+            if t is not True:
+                print(t)
+                continue
+            v = v.strip()
             if v.startswith("#"):
                 continue
             if v == "help" or v == "-h" or v == "/h" or v == "-usage":
